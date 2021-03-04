@@ -1,0 +1,50 @@
+<input type="file" id="imageUploadForm"  name="image" multiple="multiple" />
+
+$(document).ready(function() {
+       $("#imageUploadForm").change(function() {
+         var formData = new FormData();
+         var totalFiles = document.getElementById("imageUploadForm").files.length;
+         for (var i = 0; i < totalFiles; i++) {
+           var file = document.getElementById("imageUploadForm").files[i];
+           formData.append("imageUploadForm", file);
+         }
+         $.ajax({
+           type: "POST",
+           url: '/Home/Upload',
+           data: formData,
+           dataType: 'json',
+           contentType: false,
+           processData: false
+             //success: function(response) {
+             //    alert('succes!!');
+             //},
+             //error: function(error) {
+             //    alert("errror");
+             //}
+         }).done(function() {
+           alert('success');
+         }.fail(function( xhr, status, errorThrown ) {
+             alert('fail');
+           };
+         });
+       });
+       
+        [HttpPost]
+        public void Upload()
+        {
+
+if(Request.Files.Count != 0){
+
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                var file = Request.Files[i];
+
+                var fileName = Path.GetFileName(file.FileName);
+
+                var path = Path.Combine(Server.MapPath("~/App_Data/"), fileName);
+                file.SaveAs(path);
+            }
+
+        }
+
+}
